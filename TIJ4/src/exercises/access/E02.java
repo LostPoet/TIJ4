@@ -5,7 +5,7 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 public class E02 {
-	public static void main(String[] args) {
-		// Vector v = new Vector();
-	}
+    public static void main(String[] args) {
+        // Vector v = new Vector();
+    }
 }

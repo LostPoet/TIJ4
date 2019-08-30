@@ -1,7 +1,8 @@
 //: generics/CuriouslyRecurringGeneric.java
 package generics; /* Added by Eclipse.py */
 
-class GenericType<T> {}
+class GenericType<T> {
+}
 
-public class CuriouslyRecurringGeneric
-  extends GenericType<CuriouslyRecurringGeneric> {} ///:~
+public class CuriouslyRecurringGeneric extends GenericType<CuriouslyRecurringGeneric> {
+} /// :~

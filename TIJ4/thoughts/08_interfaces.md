@@ -15,11 +15,12 @@
 ## interface(为了区分更加一般化的接口, 具体的接口用interface)
 
 1. interface是完全版的抽象类, 不包含任何实现, 它像是在类之间发布了一种协议, 实现它的类都要遵守, 但interface不只是完全抽象类, 它使得多重继承变成可能, 也即一个类能够upcast到多种类型
-2. interface和类在实现隐藏层面是同一级别的, 可以声明为public或package access, 声明为public时必须和文件名一致, 另外, interface中的域自动为static和final, 方法自动为public, 否则会在继承时丢失信息(因为自动变为package access)
-3. 对已经实现interface的类, 再对其进行继承时, 其所有实现都被当作正常方法处理
-4. interface和类的继承树各自独立, 不产生冲突
-5. 在upcast的过程中, 并不能分辨出upcast的目标类型究竟是普通类, 抽象类, 还是interface, 相应的行为都是一致的
-6. *strategy*设计模式是指一个依据传递给其的参数对象不同而拥有不同行为的方法, 方法是不变的部分, 参数用于传递不同的策略对象, 策略对象包含一段具体如何处理的代码, 这个策略对象一般是接口类型
+2. interface和类在实现隐藏层面是同一级别的, 可以声明为public或package access, 声明为public时必须和文件名一致, 另外, interface中的域自动为static和final, 成员自动为public, 否则会在继承时丢失信息(因为自动变为package access)
+3. interface的实现是显式的, 实现类中必须定义相应方法, 继承时如果不覆写, 相应方法被隐式定义, 这个道理也适用于抽象方法
+4. 对已经实现interface的类, 再对其进行继承时, 其所有实现都被当作正常方法处理
+5. interface和类的继承树各自独立, 不产生冲突
+6. 在upcast的过程中, 并不能分辨出upcast的目标类型究竟是普通类, 抽象类, 还是interface, 相应的行为都是一致的
+7. *strategy*设计模式是指一个依据传递给其的参数对象不同而拥有不同行为的方法, 方法是不变的部分, 参数用于传递不同的策略对象, 策略对象包含一段具体如何处理的代码, 这个策略对象一般是接口类型
 
 ### 完全分离
 
@@ -34,6 +35,7 @@
    * upcast到不止一个基类
    * 同抽象类, 阻止创建对象, 只发布接口
 4. 如果能够创建接口, 一般接口优先于抽象类
+5. *Diamond problem*:Java只允许对interface进行真正意义上的多重继承(即extends关键词), 对普通实现仅允许单一继承, C++中则需要在基类中添加额外的语法来消除歧义
 
 ### 用继承拓展接口
 
@@ -41,15 +43,17 @@
 
 ### 多重继承中的命名冲突
 
-1. 如果类或interface中的方法名称相同, 在多重继承时有两种情况:
+1. 如果类或interface中的方法名称相同, 在多重继承时有三种情况:
    * 方法参数表不同, 这时会产生重载, 注意如果不覆写在类中的非抽象方法, 会隐式重载
    * 方法返回值不同, 这时会报错
+   * 名称, 参数表, 返回值都相同, 这时继承的方法实现了interface中的方法
 2. 综上, 尽量避免多重继承中的重复命名
 
-## 为interface适配
+## 为interface适配(使用interface时最常用的两种设计模式)
 
 1. *strategy pattern*再回顾: interface的一大好处就是可以有不同的实现, 在一个方法参数里使用interface类型的对象执行一些通用操作, 然后通过传递不同的实现对象来产生不同行为, 这样的方法更加灵活, 通用
 2. *adapter pattern*: 如果有已经编写好的类, 并且想用该类实现特定interface的功能, 一个常见的做法是用接口类复用该类(可通过composition, delegation, 或inherit), 并实现相应interface, 在继承现有类并实现interface的情形下, interface相对于一般类的优势就体现了
+3. Scanner类使用Readable接口类型作为参数, 因此既可以直接使用*strategy pattern*编写参数类, 也可用*adapter pattern*编写接口参数类, Readable接口只用实现一个read()方法, 此方法接受一个CharBuffer类型参数, 返回整型写入长度
 
 ## interface中的域
 
@@ -60,12 +64,37 @@
 ## interface的嵌套
 
 1. 类内部interface可被声明为private, 并具有一些特点:
-   * 实现interface的类必须在包含私有interface的类内部
-   * 实现interface的类可以是private, 但同时也可以是public, 在public的情况下, 对外不可提及此内部类实现interface的事实
+   * 该interface仅由该类可见, 可见性决定了实现interface的类必须在包含私有interface的类内部
+   * 进一步考察"继承"可见性, 实现interface的类可以是private, 但同时也可以是public, 在public的情况下, 可以将其当成普通的内部类, interface里的方法(该类的实现版本)也可以使用
    * 如果内部interface类型由包含该interface的类方法所使用, 在外部时可以通过类相应对象调用方法来操作内部interface类型的对象
-2. interface内部的interface只能为public(隐藏自动提升), 这与原先的规定一致
+2. interface内部的interface只能为public(隐式自动提升), 这与原先的规定一致
 3. 在内部的interface可以不必进行实现, 也即内外具有相互独立性
 
 ## interface与工厂设计模式
 
 1. *factory pattern*: 将类的定义与相应对象的创建分离, 创造一种框架, 便于复用类的代码, 工厂interface与实现专门用来创建和返回相应的类对象(类与工厂类一一对应)
+2. 最后忠告:普通类能满足需求就不要用接口
+
+## 练习题
+
+| 题号  | 描述                                                                           |
+| :---: | ------------------------------------------------------------------------------ |
+|   1   | 抽象类的接口与实现分离, 造成多态, *strategy pattern*一例                       |
+|   2   | 抽象类无法创建对象                                                             |
+|   3   | 抽象类的构造函数是不抽象的, 在里面调用多态方法同样会引起问题                   |
+|   4   | 说明了抽象类的接口省去了downcast的麻烦                                         |
+|   5   | interface的基本使用流程                                                        |
+|   6   | interface内所有成员隐含public                                                  |
+|   7   | interface的接口与实现分离, 造成多态, *strategy pattern*又一例                  |
+|   8   | interface可以方便地嵌入原来的继承体系, 实现新功能的添加                        |
+|   9   | 抽象类可以在原来的继承体系上小做改动, 就能把抽象方法提取出来                   |
+|  10   | interface可以实现更细粒度的方法划分, 可为不同方法创建不同接口, 更加灵活        |
+|  11   | *Adapter Pattern*一例, 也体现了一致返回值的便捷性                              |
+|  12   | 体现interface添加新功能的便捷性                                                |
+|  13   | 合并interface中的同名方法不会引起冲突, 而C++中则造成*Diamond Problem*          |
+|  14   | 拓展interface及多重继承一例                                                    |
+|  15   | 拓展interface及多重继承抽象类一例                                              |
+|  16   | 为应用Scanner类, 实现Readable接口, 用到了*Adapter Pattern*                     |
+|  17   | interface中的域是隐藏的static&final                                            |
+|  18   | 承袭Polymorphism章节练习题5, interface + factory的框架适合于有新类要添加的情形 |
+|  19   | 工厂方法又一例                                                                 |
