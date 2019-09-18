@@ -7,6 +7,11 @@ package polymorphism; /* Added by Eclipse.py */
 import static net.mindview.util.Print.*;
 
 class Glyph {
+    // Modified to see order of class initialization
+    static {
+        System.out.println("static from Glyph");
+    }
+
     void draw() {
         print("Glyph.draw()");
     }
@@ -19,6 +24,10 @@ class Glyph {
 }
 
 class RoundGlyph extends Glyph {
+    // Modified to see order of class initialization
+    static {
+        System.out.println("static from RoundGlyph");
+    }
     private int radius = 1;
 
     RoundGlyph(int r) {

@@ -29,11 +29,19 @@ class Triangle extends Shape {
     }
 }
 
+class TestCast {
+}
+
 public class Shapes {
     public static void main(String[] args) {
         List<Shape> shapeList = Arrays.asList(new Circle(), new Square(), new Triangle());
         for (Shape shape : shapeList)
             shape.draw();
+        Shape s = new Circle();
+        // trigger an error:
+        // System.out.println((TestCast)s);
+        // get an exception:
+        System.out.println((Square) s);
     }
 } /*
    * Output: Circle.draw() Square.draw() Triangle.draw()
