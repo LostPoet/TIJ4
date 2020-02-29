@@ -9,7 +9,8 @@ class NonDefault {
 }
 
 public class E15_AnonymousTest {
-    static NonDefault getNonDefault(int i) {
+    // SE1.6: i must be final
+    static NonDefault getNonDefault(final int i) {
 	return new NonDefault(i) {
 	    {
 		System.out.println("pi = " + pi++);

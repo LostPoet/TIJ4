@@ -1,7 +1,22 @@
 package exercises.typeinfo;
 
 import static net.mindview.util.Print.*;
-import static exercises.typeinfo.E21_SimpleProxyDemo_Deprecated.consumer;
+
+interface Interface {
+    void doSomething();
+
+    void somethingElse(String arg);
+}
+
+class RealObject implements Interface {
+    public void doSomething() {
+        print("doSomething");
+    }
+
+    public void somethingElse(String arg) {
+        print("somethingElse " + arg);
+    }
+}
 
 class SimpleProxy implements Interface {
     private Interface proxied;
@@ -28,6 +43,11 @@ class SimpleProxy implements Interface {
 }
 
 public class E21_SimpleProxyDemo {
+    public static void consumer(Interface iface) {
+        iface.doSomething();
+        iface.somethingElse("bonobo");
+    }
+
     public static void main(String[] args) {
         consumer(new RealObject());
         print("---------------------------");

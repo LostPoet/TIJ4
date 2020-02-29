@@ -1,7 +1,7 @@
 package exercises.typeinfo;
 
 import static net.mindview.util.Print.print;
-import static exercises.typeinfo.E21_SimpleProxyDemo_Deprecated.consumer;
+import static exercises.typeinfo.E21_SimpleProxyDemo.consumer;
 import java.lang.reflect.*;
 
 class DynamicProxyHandler implements InvocationHandler {
@@ -30,7 +30,7 @@ public class E22_SimpleDynamicProxyDemo {
         consumer(real);
         // Insert a proxy and call again:
         Interface proxy = (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(),
-                new Class<?>[] { Interface.class }, new DynamicProxyHandler(real));
+                new Class[] { Interface.class }, new DynamicProxyHandler(real));
         consumer(proxy);
     }
 }
